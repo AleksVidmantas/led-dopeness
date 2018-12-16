@@ -1,17 +1,37 @@
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QFrame, QPushButton, QComboBox
+import serial
+from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
 from PyQt5.QtGui import QFontDatabase, QFont
 
 import sys
 
+class ArdSerial:
+    ser = ''
 
-class rLum(QMainWindow):
+    def __init__(self, port):
+        print("ArdSerial started... ")
+        self.ser = serial.Serial(port, 9600)
+        self.ser.write(b'f')
+        self.ser.write(b'g')
+
+    def send_val(self, val):
+        self.ser.write(1)
+        print("Test")
+
+
+
+class RLum(QMainWindow):
     w = 0
     h = 0
     port = 0
+    color = 0
+    port = 'COM6'
+    print("Help")
+    ard = ArdSerial(port)
     #Setup all the goodies
     def __init__(self, *args, **kwargs):
-        super(rLum, self).__init__( *args, **kwargs)
+        print("RLUM ")
+        super(RLum, self).__init__( *args, **kwargs)
         self.w = 1280
         self.h = 720
         self.setWindowTitle('xShine')
@@ -24,12 +44,33 @@ class rLum(QMainWindow):
 
     def setEffect(self, index):
         print('set to ' + str(index))
+    def setColor(self):
+        self.color = QColorDialog.getColor()
 
     def addGiu(self):
+        # Set port button/lists block
         cb = QComboBox(self)
         cb.addItem("01")
         cb.addItem("02")
         cb.move(50, 400)
+
+        set_port_btn = QPushButton('Set Port #', self)
+        set_port_btn.setToolTip('Sets port # only, if the prefix is incorrect, use manual port set')
+        set_port_btn.move(50, 440)
+        set_port_btn.clicked.connect(lambda:print("Define me plz"))
+
+        #Manual port text box
+        man_port_txt = QLineEdit(self)
+        man_port_txt.move(50, 500)
+        man_port_txt.setToolTip("If a manual port is required, enter it here")
+        man_port_txt.resize(100, 25)
+
+
+        #Manual port set port button
+        set_man_port = QPushButton('Set Port', self)
+        set_man_port.setToolTip('Sets port directly to what is in the text box above')
+        set_man_port.move(50, 530)
+        set_man_port.clicked.connect(lambda: self.ard.send_val("Test"))
 
         #Strobe block
         str_button = QPushButton('Strobe', self)
@@ -43,18 +84,32 @@ class rLum(QMainWindow):
         pulse_button.move(300, 400)
         pulse_button.clicked.connect(lambda: self.setEffect(2))
 
-
-        label = QLabel('Welcom to rLum', self)
+        #Welcome box
+        label = QLabel('Welcome to rLum', self)
         label.adjustSize()
         label.move(self.w/2 - 100, 0)
 
+        #color block
+        color_btn = QPushButton('Select Color', self)
+        color_btn.move(900, 400)
+        color_btn.clicked.connect(lambda: self.setColor())
 
 
 
+import time
+ser = serial.Serial('COM6', 9600, timeout=0)
+while 1:
+    try:
+        print (ser.readline())
+        time.sleep(1)
+    except ser.SerialTimeoutException:
+        print('Data could not be read')
+    time.sleep(1)
+'''
 
 app = QApplication(sys.argv)
 
-window = rLum()
+window = RLum()
 window.show()
 
-app.exec()
+app.exec()'''
