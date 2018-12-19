@@ -9,138 +9,50 @@
 #define DATA_PIN 3
 //#define CLzsOCK_PIN 13
 
-// Define the array of leds
+// Define the array of leds, function headers
 int ind = 0;
 int ind2 = 0;
 CRGB leds[NUM_LEDS];
-
-
- 
 void flash(CRGB *leds);
 int func_2_run = 0;
 int arr[3] = {0,0,0};
 int count = 0;
 
-///////
-
-// Example 3 - Receive with start- and end-markers
-
-const byte numChars = 32;
-char receivedChars[numChars];
-
-boolean newData = false;
 
 void setup() {
-    Serial.begin(9600);
-     FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
-    Serial.println("<Arduino is ready>");
+  Serial.begin(9600);
+  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
+  Serial.println("<Arduino is ready>");
 }
-int str2 =0;
+int str2 = 0;
 int func_2_run_old = -1;
-
+int incomingByte = 0;
+int curVal = 0;
 void loop() {
-    recvWithStartEndMarkers();
-    showNewData();
-    //Serial.println(Serial.read());
-  //delay(100);
-  
-/*
-  while(Serial.peek() > -1){
-    //Serial.print(Serial.peek());
-    arr[count] = Serial.read() - 48;
-    count ++; 
-  }
-  Serial.print(arr[0]);
-  Serial.print(arr[1]);
-  Serial.print(arr[2]);
-  func_2_run = arr[0];
-  Serial.println();
-
-  //if(Serial.peek() > -1){
-    //func_2_run = Serial.peek() - 48;
-    //Serial.read();
-    //Serial.readBytesUntil('n', buffer, 3);
-    //int incomingValue = atoi(buffer);
-    //Serial.print(incomingValue);
-    //func_2_run = incomingValue;
-    //clear(leds);
-  //}*/
-  //clear(leds);
-  //clear(leds);
-  func_2_run = receivedChars[0]-48;
-  str2 = (receivedChars[1] - 48)*10 + (receivedChars[2] - 48);
-  if(func_2_run_old != func_2_run){
-    clear(leds);
-    clear(leds);
-  }
-  switch(func_2_run){
-    case 0:
-      flash(leds);
-      func_2_run_old = 0;
-      break;
-    case 1:
-      chase(leds);
-      func_2_run_old = 1;
-      break;
-    case 2: 
-      pulse(leds);
-      func_2_run_old = 2;
-      break;
-    case 3:
-     // int str = 0;
-       //tens and ones place, MATH
-      //Serial.println("STR: ");
-      //Serial.println(str2);
-      direct_brightness(leds, str2);
-      func_2_run_old = 3;
-      break;
-    default:
-       break;
-  }
-  
-}
-
-void recvWithStartEndMarkers() {
-    static boolean recvInProgress = false;
-    static byte ndx = 0;
-    char startMarker = '<';
-    char endMarker = '>';
-    char rc;
- 
-    while (Serial.available() > 0 && newData == false) {
-        rc = Serial.read();
-
-        if (recvInProgress == true) {
-            if (rc != endMarker) {
-                receivedChars[ndx] = rc;
-                ndx++;
-                if (ndx >= numChars) {
-                    ndx = numChars - 1;
+ // send data only when you receive data:
+    //Serial.println("test");
+        if (Serial.available() > 0) {
+                // read the incoming byte:
+                incomingByte = Serial.read();
+                curVal = incomingByte;
+                // say what you got:
+                Serial.print("I received: ");
+                Serial.println(incomingByte, DEC);
+                
+        }
+        if(curVal == 50){
+                  chase(leds);
                 }
-            }
-            else {
-                receivedChars[ndx] = '\0'; // terminate the string
-                recvInProgress = false;
-                ndx = 0;
-                newData = true;
-            }
-        }
-
-        else if (rc == startMarker) {
-            recvInProgress = true;
-        }
-    }
+ //delay(450);
+ //chase(leds);
+ //delay(50);
+ 
 }
+  //chase(leds);
+ // delay(50);
+//}
 
-void showNewData() {
-    if (newData == true) {
-        Serial.print("This just in ... ");
-        Serial.println(receivedChars);
-        newData = false;
-    }
-}
 
-///////
 
 
 void flash(CRGB *leds){
@@ -174,7 +86,7 @@ void chase(CRGB *leds) {
     option = 0;
     Serial.println(option);
   }
-  leds[pre] = CRGB::Blue;
+  leds[pre] = CRGB::Green;
   if(option == 0){
     leds[pre] = CRGB::Red;
   }
@@ -213,6 +125,7 @@ void clear(CRGB *leds){
 }
 int str = 0;
 int addum = 50;
+
 void pulse(CRGB *leds){
   for(int i = 0; i < NUM_LEDS; i++){
     leds[i] = CRGB(0,255,0);

@@ -2,11 +2,24 @@ import serial
 from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
 from PyQt5.QtGui import QFontDatabase, QFont
-
+from PyQt5.QtCore import QThread, pyqtSignal
 import sys
 
+
+class Reader(QThread):
+
+    def __init__(self, ard):
+        QThread.__init__(self)
+        print("setup")
+        self.ard = ard
+        #self.run()
+
+    def run(self):
+        while True:  # Or: while ser.inWaiting():
+            print("Gleemed: ", self.ard.ser.readline())
+
+
 class ArdSerial:
-    ser = ''
 
     def __init__(self, port):
         print("ArdSerial started... ")
@@ -16,8 +29,16 @@ class ArdSerial:
 
     def send_val(self, val):
         self.ser.write(1)
-        print("Test")
+        #print("Test")
 
+    def enable(self, val):
+        print("passed", val)
+        if val == 0:
+            self.ser.write(b'1')
+            #print(b'no')
+        if val == 2:
+            self.ser.write(b'2')
+            #print(b'yes')
 
 
 class RLum(QMainWindow):
@@ -27,9 +48,12 @@ class RLum(QMainWindow):
     color = 0
     port = 'COM6'
     print("Help")
-    ard = ArdSerial(port)
-    #Setup all the goodies
+
+    # Setup all the goodies
     def __init__(self, *args, **kwargs):
+
+        self.ard = ArdSerial(self.port)
+        self.read_thread = Reader(self.ard)
         print("RLUM ")
         super(RLum, self).__init__( *args, **kwargs)
         self.w = 1280
@@ -40,14 +64,23 @@ class RLum(QMainWindow):
         self.setCentralWidget(frm)
         self.resize(self.w, self.h)
         self.setStyleSheet("QLabel {font: 30pt Trebuchet MS}")
-        self.addGiu()
+        self.addGui()
+        self.read_thread.start()
 
     def setEffect(self, index):
         print('set to ' + str(index))
+
     def setColor(self):
         self.color = QColorDialog.getColor()
 
-    def addGiu(self):
+    def addGui(self):
+        #on/off
+        enabled_btn = QCheckBox("Enable", self)
+        enabled_btn.move(10, 0)
+        enabled_btn.toggle()
+        enabled_btn.setToolTip('Enables/Disables entire light')
+        enabled_btn.clicked.connect(lambda: self.ard.enable(enabled_btn.checkState()))
+
         # Set port button/lists block
         cb = QComboBox(self)
         cb.addItem("01")
@@ -57,7 +90,7 @@ class RLum(QMainWindow):
         set_port_btn = QPushButton('Set Port #', self)
         set_port_btn.setToolTip('Sets port # only, if the prefix is incorrect, use manual port set')
         set_port_btn.move(50, 440)
-        set_port_btn.clicked.connect(lambda:print("Define me plz"))
+        set_port_btn.clicked.connect(lambda: print("Define me plz"))
 
         #Manual port text box
         man_port_txt = QLineEdit(self)
@@ -96,20 +129,11 @@ class RLum(QMainWindow):
 
 
 
-import time
-ser = serial.Serial('COM6', 9600, timeout=0)
-while 1:
-    try:
-        print (ser.readline())
-        time.sleep(1)
-    except ser.SerialTimeoutException:
-        print('Data could not be read')
-    time.sleep(1)
-'''
+
 
 app = QApplication(sys.argv)
 
 window = RLum()
 window.show()
 
-app.exec()'''
+app.exec()
