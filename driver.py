@@ -24,17 +24,17 @@ class ArdSerial:
     def __init__(self, port):
         print("ArdSerial started... ")
         self.ser = serial.Serial(port, 9600)
-        self.ser.write(b'f')
-        self.ser.write(b'g')
+        self.ser.write(b'f$')
+        self.ser.write(b'g$')
 
     def send_val(self, val):
-        self.ser.write(1)
+        self.ser.write(val)
         #print("Test")
 
     def enable(self, val):
         print("passed", val)
         if val == 0:
-            self.ser.write(b'1')
+            self.ser.write(b'4')
             #print(b'no')
         if val == 2:
             self.ser.write(b'2')
@@ -68,6 +68,7 @@ class RLum(QMainWindow):
         self.read_thread.start()
 
     def setEffect(self, index):
+        self.ard.send_val(b'g2$')
         print('set to ' + str(index))
 
     def setColor(self):
@@ -111,16 +112,22 @@ class RLum(QMainWindow):
         str_button.move(200, 400)
         str_button.clicked.connect(lambda: self.setEffect(1))
 
-        #Pulse blocke
+        #Pulse block
         pulse_button = QPushButton('Pulse', self)
         pulse_button.setToolTip('Entire strip will pulse to set color and frequency')
         pulse_button.move(300, 400)
-        pulse_button.clicked.connect(lambda: self.setEffect(2))
+        pulse_button.clicked.connect(lambda: self.ard.ser.write(b'*g1$'))
+
+        #Chase block
+        chase_btn = QPushButton('Chase', self)
+        chase_btn.setToolTip('One color will chase the other until it hits the beginning of strip, then repeat')
+        chase_btn.move(400, 400)
+        chase_btn.clicked.connect(lambda: self.ard.ser.write(b'*g2$'))
 
         #Welcome box
-        label = QLabel('Welcome to rLum', self)
+        label = QLabel('Welcome to LED Control', self)
         label.adjustSize()
-        label.move(self.w/2 - 100, 0)
+        label.move(self.w/2 - 200, 0)
 
         #color block
         color_btn = QPushButton('Select Color', self)
