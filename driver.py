@@ -14,9 +14,9 @@ class Reader(QThread):
         self.ard = ard
         #self.run()
 
-    def run(self):
-        while True:  # Or: while ser.inWaiting():
-            print("Gleemed: ", self.ard.ser.readline())
+   # def run(self):
+    #    while True:  # Or: while ser.inWaiting():
+     #       print("Gleemed: ", self.ard.ser.readline())
 
 
 class ArdSerial:
@@ -46,7 +46,7 @@ class RLum(QMainWindow):
     h = 0
     port = 0
     color = 0
-    port = 'COM6'
+    port = '/dev/ttyACM0'
     print("Help")
 
     # Setup all the goodies
@@ -110,19 +110,19 @@ class RLum(QMainWindow):
         str_button = QPushButton('Strobe', self)
         str_button.setToolTip('Entire strip rapidly turns on and off to set color and frequency')
         str_button.move(200, 400)
-        str_button.clicked.connect(lambda: self.setEffect(1))
+        str_button.clicked.connect(lambda: self.ard.ser.write(b'gsc12#$'))
 
         #Pulse block
         pulse_button = QPushButton('Pulse', self)
         pulse_button.setToolTip('Entire strip will pulse to set color and frequency')
         pulse_button.move(300, 400)
-        pulse_button.clicked.connect(lambda: self.ard.ser.write(b'*g1$'))
+        pulse_button.clicked.connect(lambda: self.ard.ser.write(b'gpc12#$')) #only the 1 has trouble getting through
 
         #Chase block
         chase_btn = QPushButton('Chase', self)
         chase_btn.setToolTip('One color will chase the other until it hits the beginning of strip, then repeat')
         chase_btn.move(400, 400)
-        chase_btn.clicked.connect(lambda: self.ard.ser.write(b'*g2$'))
+        chase_btn.clicked.connect(lambda: self.ard.ser.write(b'gcc12#$'))
 
         #Welcome box
         label = QLabel('Welcome to LED Control', self)

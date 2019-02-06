@@ -10,7 +10,7 @@
 //#define CLzsOCK_PIN 13
 
 // Define the array of leds, function headers
-int ind = 0;
+//int ind = 0;
 int ind2 = 0;
 CRGB leds[NUM_LEDS];
 void flash(CRGB *leds);
@@ -26,57 +26,63 @@ void setup() {
 }
 int str2 = 0;
 int func_2_run_old = -1;
-int incomingByte = 0;
+
 int curVal = 0;
 int codeInd = 0;
 char code [16];
-void (*pattern)(CRGB *leds) = &pulse; //Hella important, minimizes cost and is the function to run
+
+void (*pattern)(CRGB *leds) = &chase; //Hella important, minimizes cost and is the function to run
+
+int incomingByte = 0;   // for incoming serial data
+char ar[6]; //tmp array holder
+char cmd[6]; //ar is assigned here once '$' is read
+int ind = 0; 
+int ci = 0;  //index for ar and cmd tracking
 void loop() {
-
-  /* Finalize and return interpreted serial results*/
-  if(code[codeInd-1] == '$'){
-    Serial.print("Printing out: ");
-    String str(code);
-    Serial.println(str);
-    code[codeInd-1] = '&';
-  }
- 
-
-  //Begin Serial ReceptionBlock
+  delay(5);
+  // send data only when you receive data:
   if (Serial.available() > 0) {
     // read the incoming byte:
     incomingByte = Serial.read();
-    curVal = incomingByte;
-    // say what you got:
-    Serial.print("I received: ");
-    char c = curVal;
-    if(c == '*'){
-      for(int i = 0; i < 16; i++){
-        code[i] = '0';
-      }codeInd = 0;
+    char c = incomingByte;
+    if(c != '$'){
+      ar[ci] = c;
+      ci++;
     }else{
-        code[codeInd] = c;
-        codeInd++;
-        Serial.println("Set "  + c);
+      strncpy(cmd, ar, 6);
+      ar[0] = '0'; //required this way
+      ar[1] = '0';
+      ar[2] = '0';
+      ar[3] = '0';
+      ar[4] = '0';
+      ar[5] = '0';
+      ci = 0;
+      Serial.println(cmd);
     }
    
-    Serial.println(c);
+    //Serial.println(c);
   }
   //End Serial Reception Block
 
-  
+  Serial.println(cmd);
   /* Important logic control from serial communication*/
-  switch(code[0]){ //remember 0 is * for opening communication
+  switch(cmd[0]){ //remember 0 is * for opening communication
     case 'g':
       /* Group pattern logic switch */
-      switch(code[1]){
-        case '1': 
+      switch(cmd[1]){
+        case 'p': 
           pattern = &pulse;
+          Serial.println("Fuuuc");
           break;
-        case '2':
+        case 'c':
           pattern = &chase;
           break; 
+         case 's':
+          pattern = &flash; //TODO change to strobe?
+          break;
       }
+      clear(leds);
+      cmd[0] = '0';
   }
   
   (*pattern)(leds); //Pattern Function Call
