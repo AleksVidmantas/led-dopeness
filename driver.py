@@ -2,9 +2,10 @@ import serial
 from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
 from PyQt5.QtGui import QFontDatabase, QFont
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
 import sys
-
+import math
+import time
 
 class Reader(QThread):
 
@@ -14,9 +15,9 @@ class Reader(QThread):
         self.ard = ard
         #self.run()
 
-   # def run(self):
-    #    while True:  # Or: while ser.inWaiting():
-     #       print("Gleemed: ", self.ard.ser.readline())
+    def run(self):
+        while True:  # Or: while ser.inWaiting():
+            print("Gleemed: ", self.ard.ser.readline())
 
 
 class ArdSerial:
@@ -28,7 +29,10 @@ class ArdSerial:
         self.ser.write(b'g$')
 
     def send_val(self, val):
+
         self.ser.write(val)
+
+        #time.sleep(.25)
         #print("Test")
 
     def enable(self, val):
@@ -54,8 +58,9 @@ class RLum(QMainWindow):
 
         self.ard = ArdSerial(self.port)
         self.read_thread = Reader(self.ard)
+
         print("RLUM ")
-        super(RLum, self).__init__( *args, **kwargs)
+        super(RLum, self).__init__(*args, **kwargs)
         self.w = 1280
         self.h = 720
         self.setWindowTitle('xShine')
@@ -76,11 +81,11 @@ class RLum(QMainWindow):
 
     def addGui(self):
         #on/off
-        enabled_btn = QCheckBox("Enable", self)
-        enabled_btn.move(10, 0)
-        enabled_btn.toggle()
+        enabled_btn = QPushButton("Disable", self)
+        enabled_btn.move(5, 5)
+        enabled_btn.setCheckable(True)
         enabled_btn.setToolTip('Enables/Disables entire light')
-        enabled_btn.clicked.connect(lambda: self.ard.enable(enabled_btn.checkState()))
+        enabled_btn.clicked.connect(lambda: self.ard.ser.write(b'offaaa$')) #will need to add ternary op to decide to enable/disable
 
         # Set port button/lists block
         cb = QComboBox(self)
@@ -134,8 +139,20 @@ class RLum(QMainWindow):
         color_btn.move(900, 400)
         color_btn.clicked.connect(lambda: self.setColor())
 
+        #brightness slider & label
+        br_label = QLabel("Brightness", self)
+        br_label.setFixedWidth(200)
+        br_label.move(900, 450)
+
+        br_slider = QSlider(Qt.Horizontal, self)
+        br_slider.move(900, 500)
+        br_slider.setFocusPolicy(Qt.StrongFocus)
+        br_slider.setTickPosition(QSlider.TicksBothSides)
+        br_slider.setTickInterval(25)
+        br_slider.setSingleStep(1)
 
 
+        br_slider.valueChanged.connect(lambda:  self.ard.send_val(b'p' + bytearray((str("{:0>3d}".format(math.ceil(br_slider.value()*2.5)))), 'utf-8') + b'##$'))
 
 
 app = QApplication(sys.argv)

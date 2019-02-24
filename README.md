@@ -10,6 +10,8 @@ The digits and their meanings are listed below.
 
 a. 'g' - Group type change.
 
+b. 'p' - Change power.  The next two digits are 00-26 that represent power to be set/10.
+
 2. Digit 2 - Type of pattern.  So far they are:
   
 a. 'p' - pulse
@@ -17,4 +19,11 @@ a. 'p' - pulse
 b. 'c' - chase 
 
 c. 's' - strobe
+
+### Notes
+(leds, int) as a casual parameter or global strength
+variable?
+
+help
+
 
