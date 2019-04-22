@@ -5,7 +5,8 @@
 
 class IPattern {
 public:
-  virtual void initialize(CRGB * colors, int ncolors) = 0;
+  // colors are a list of hues
+  virtual void initialize(uint8_t * colors, uint8_t ncolors) = 0;
   virtual void showPattern(CRGB * leds, short nleds, short start = 0) = 0;
 };
 
