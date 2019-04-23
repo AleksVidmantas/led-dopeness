@@ -14,7 +14,7 @@ void PerlinPattern::showPattern(CRGB * leds, short len, short start){
     for(int i = 0; i < len; i++) {
         int ioffset = resolution * i;
         uint8_t brightnessValue = inoise8(ioffset, currentTime);
-        uint8_t color = inoise8(ioffset, colorValue);
+        uint8_t color = inoise8(resolution * (len - i), colorValue);
         uint8_t colorIndex = map((long)color, 0, 256, 0, (long)numColors);
         short val = (brightnessValue * brightnessValue) / 255;
         // short val2 = val * val / 255;

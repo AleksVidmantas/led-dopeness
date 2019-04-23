@@ -3,11 +3,6 @@
 
 #include "IPattern.h"
 
-struct Vector2_float{
-public:
-  float x, y; 
-};
-
 class PerlinPattern : IPattern {
 public:
   void initialize(uint8_t * colors, uint8_t ncolors) override;
