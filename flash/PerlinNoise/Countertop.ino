@@ -3,6 +3,7 @@
 #define LEDS_UNDER_COUNTER 185
 #define LEDS_ABOVE_COUNTER 115 //300 - 185
 #define LEDS_AROUND_TOP 150
+// can't do all 400 because of memory constraints
 #define NUM_LEDS 300
 
 CRGB leds[NUM_LEDS];
