@@ -1,7 +1,7 @@
 #include "heatPattern.h"
 
 #define DIFFUSION 1.05
-#define SPARK_RATE 255// measured as fraction of 65535
+#define SPARK_RATE 65535// measured as fraction of 65535
 
 void HeatPattern::initialize(uint8_t * colors, uint8_t ncolors) {
     this->colors = colors;

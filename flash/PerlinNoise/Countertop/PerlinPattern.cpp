@@ -5,7 +5,7 @@ void PerlinPattern::initialize(uint8_t * colors, uint8_t ncolors){
     currentTime = 0;
     colorValue = 0;
     timeValue = 0;
-    resolution = 20; //normal starting number
+    resolution = 100; //normal starting number
     this->colors = colors;
     this->numColors = ncolors;
 }
