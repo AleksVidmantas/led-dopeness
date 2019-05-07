@@ -5,15 +5,13 @@
 
 class LedOperator{
 public:
-  virtual void operator()(CHSV * leds, short len){ leds[0].sat = 255; leds[0].val = 255; }
-  virtual void go(CHSV * leds, short len){ this->operator()(leds, len); }
-  LedOperator * operator>>(LedOperator & next);
-  LedOperator * operator>>(LedOperator * next);
+  virtual void operator()(CHSV * leds, short len) = 0;
+  void go(CHSV * leds, short len){ this->operator()(leds, len); }
 };
 
 class LayerOperator : public LedOperator{
 public:
-  LayerOperator(LedOperator * a, LedOperator * b);
+  LayerOperator(LedOperator * first, LedOperator * next);
   void operator()(CHSV * leds, short len) override;
 private:
   LedOperator * first;
