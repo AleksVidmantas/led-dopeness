@@ -13,7 +13,9 @@ CRGB leds[NUM_LEDS];
 HeatPattern hp;
 PerlinPattern pp;
 
+FillOperator base(CHSV(255, 255, 255));
 PerlinHue pHue(20, 5);
+LayerOperator l1(&base, &pHue);
 PerlinBrightness pBri(40, 5, 3);
 LayerOperator perlinAll(&pHue, &pBri);
 
