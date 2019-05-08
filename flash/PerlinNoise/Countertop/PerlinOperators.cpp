@@ -10,7 +10,6 @@ void PerlinHue::operator()(CHSV * leds, short len){
     for(int i = 0; i < len; i++) {
         int ioffset = resolution * i + nOffset;
         leds[i].hue = inoise8(ioffset, timeCount);
-        leds[i].sat = 255;
     }
     timeCount += timeStep;
 }

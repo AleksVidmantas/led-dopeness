@@ -1,6 +1,7 @@
 #include "PerlinPattern.h"
 #include "heatPattern.h"
 #include "PerlinOperators.h"
+#include "FillOperator.h"
 #include "Transform.h"
 #define LEDS_UNDER_COUNTER 185
 #define LEDS_ABOVE_COUNTER 115 //300 - 185
@@ -19,7 +20,9 @@ byte tfCube(byte in){
   return (byte)s_in;
 }
 
+FillOperator base(CHSV(255, 255, 255));
 PerlinHue pHue(20, 5);
+LayerOperator l1(&base, &pHue);
 PerlinBrightness pBri(40, 5, 3);
 BrightnessTransform bTf(tfCube);
 LayerOperator perlinAll(&pHue, &pBri);
