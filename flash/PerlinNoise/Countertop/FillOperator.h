@@ -6,7 +6,7 @@
 class FillOperator : public LedOperator{
 public:
     FillOperator(CHSV fill);
-    operator()(CHSV * leds, short len) override;
+    void operator()(CHSV * leds, short len) override;
 private:
     CHSV fill;
 };

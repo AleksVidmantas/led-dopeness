@@ -1,6 +1,7 @@
 #include "PerlinPattern.h"
 #include "heatPattern.h"
 #include "PerlinOperators.h"
+#include "FillOperator.h"
 #define LEDS_UNDER_COUNTER 185
 #define LEDS_ABOVE_COUNTER 115 //300 - 185
 #define LEDS_AROUND_TOP 135
