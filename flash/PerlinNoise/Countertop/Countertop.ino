@@ -11,12 +11,12 @@ CHSV ledColors[NUM_LEDS];
 CRGB leds[NUM_LEDS];
 
 byte tfCube(byte in){
-  short ins = in;
-  ins *= in;
-  ins /= 255;
-  ins *= in;
-  ins /= 255;
-  return (byte)ins;
+  short s_in = in;
+  s_in *= in;
+  s_in /= 255;
+  s_in *= in;
+  s_in /= 255;
+  return (byte)s_in;
 }
 
 PerlinHue pHue(20, 5);
