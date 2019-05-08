@@ -25,13 +25,7 @@ PerlinBrightness::PerlinBrightness(short resolution, byte timeStep, byte order){
 void PerlinBrightness::operator()(CHSV * leds, short len){
       for(int i = 0; i < len; i++) {
         int ioffset = resolution * i + nOffset;
-        uint8_t brightnessValue = inoise8(ioffset, timeCount); //*.2 for a nightlight, @Aleks Vidmantas
-        short val = (brightnessValue * brightnessValue) / 256;
-//        for(byte i = 1; i < order; i++){
-//          val *= brightnessValue;
-//          val /= 256;
-//        }
-        leds[i].val = val;
+        leds[i].val = inoise8(ioffset, timeCount); //*.2 for a nightlight, @Aleks Vidmantas
     }
     timeCount += timeStep;
 }
