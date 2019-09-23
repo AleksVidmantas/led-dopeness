@@ -15,11 +15,11 @@ private:
 
 class PerlinBrightness : public LedOperator {
 public:
-  PerlinBrightness(short res, byte ts, byte order);
+  PerlinBrightness(short res, byte ts);
   void operator()(CHSV * leds, short len) override;
 private:
   short resolution;
-  byte timeStep, order, nOffset;
+  byte timeStep, nOffset;
   uint16_t timeCount = 0;
 };
 
