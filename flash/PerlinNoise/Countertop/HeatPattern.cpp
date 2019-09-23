@@ -1,4 +1,4 @@
-#include "heatPattern.h"
+#include "HeatPattern.h"
 
 #define DIFFUSION 1.05
 #define SPARK_RATE 65535// measured as fraction of 65535
