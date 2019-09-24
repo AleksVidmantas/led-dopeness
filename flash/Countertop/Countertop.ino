@@ -26,17 +26,18 @@ CHSV goldPattern[5] = {
 };
 
 StaticOperator pGold(goldPattern, 5);
-FillOperator fGold(CHSV(36, 255, 128));
+RotateOperator rot(1, 5);
+LayerOperator animatedTriangle(&pGold, &rot);
 FillOperator fBlue(CHSV(170, 255, 64));
 FillOperator fBlack(CHSV(0, 0, 0));
 // ToggleFull tColor(&fGold, &fBlue, 30);
-KernelOperator kBlur(gaussianBlurKernel, 5);
+// KernelOperator kBlur(gaussianBlurKernel, 5);
 //PerlinBrightness pBri(40, 5);
 //LayerOperator pBlur(&pBri, &kBlur);
 //BrightnessTransform bt(&normsquare);
 //LayerOperator perlinColor(&pGold, &pBlur);
 //LayerOperator perlinFull(&perlinColor, &bt);
-LayerOperator pBlur(&pGold, &kBlur);
+// LayerOperator pBlur(&pGold, &kBlur);
 
 void setup() {
   int total = 0;
@@ -53,7 +54,7 @@ void setup() {
 
 void loop() {
   delay(1);
-  pGold.go(ledColors, 1200);
+  animatedTriangle.go(ledColors, 1200);
   fBlack.go(ledColors + TRIANGLE_HORIZONTAL_START, TRIANGLE_HORIZONTAL_LEN);
 //  pGold.go(ledColors + TRIANGLE_COUNTER_START, TRIANGLE_COUNTER_LEN);
   hsv2rgb_spectrum(ledColors, ledRaw, TRIANGLE_LED_COUNT + SHELF_LED_COUNT + CIELING_LED_COUNT + COUCH_LED_COUNT);

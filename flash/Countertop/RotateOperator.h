@@ -14,6 +14,6 @@ private:
     int periodCounter;
     int period;
     int maxBufSize;
-}
+};
 
 #endif

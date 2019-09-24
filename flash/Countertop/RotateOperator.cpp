@@ -32,4 +32,6 @@ void RotateOperator::operator()(CHSV * leds, short len){
         }
         periodCounter = 0;
     }
+
+    free(buf);
 }
