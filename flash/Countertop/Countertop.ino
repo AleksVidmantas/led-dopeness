@@ -1,11 +1,4 @@
-#include "PerlinPattern.h"
-#include "heatPattern.h"
-#include "PerlinOperators.h"
-#include "FillOperator.h"
-#include "ToggleOperator.h"
-#include "StaticOperator.h"
-#include "KernelOperator.h"
-#include "Transform.h"
+#include "Operators.h"
 #include "LedMap.h"
 
 CHSV ledColors[TRIANGLE_LED_COUNT + SHELF_LED_COUNT + CIELING_LED_COUNT + COUCH_LED_COUNT];
@@ -24,15 +17,18 @@ byte gaussianBlurKernel[5] = {
   16
 };
 
-CHSV goldPattern[4] = {
+CHSV goldPattern[5] = {
   CHSV(36, 255, 0),
   CHSV(36, 255, 0),
   CHSV(36, 255, 0),
-  CHSV(36, 255, 128)
+  CHSV(36, 255, 90),
+  CHSV(36, 255, 90)
 };
 
-StaticOperator pGold(goldPattern, 4);
-// FillOperator fBlue(CHSV(170, 255, 64));
+StaticOperator pGold(goldPattern, 5);
+FillOperator fGold(CHSV(36, 255, 128));
+FillOperator fBlue(CHSV(170, 255, 64));
+FillOperator fBlack(CHSV(0, 0, 0));
 // ToggleFull tColor(&fGold, &fBlue, 30);
 KernelOperator kBlur(gaussianBlurKernel, 5);
 //PerlinBrightness pBri(40, 5);
@@ -57,8 +53,9 @@ void setup() {
 
 void loop() {
   delay(1);
-  pBlur.go(ledColors + TRIANGLE_TRIANGLE_START, TRIANGLE_TRIANGLE_LEN);
-  pGold.go(ledColors + TRIANGLE_COUNTER_START, TRIANGLE_COUNTER_LEN);
+  pGold.go(ledColors, 1200);
+  fBlack.go(ledColors + TRIANGLE_HORIZONTAL_START, TRIANGLE_HORIZONTAL_LEN);
+//  pGold.go(ledColors + TRIANGLE_COUNTER_START, TRIANGLE_COUNTER_LEN);
   hsv2rgb_spectrum(ledColors, ledRaw, TRIANGLE_LED_COUNT + SHELF_LED_COUNT + CIELING_LED_COUNT + COUCH_LED_COUNT);
   FastLED.show();
 }

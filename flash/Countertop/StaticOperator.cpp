@@ -3,6 +3,7 @@
 StaticOperator::StaticOperator(CHSV * pattern, int patternLen){
     this->pattern = pattern;
     this->patternLen = patternLen;
+    this->offset = 0;
 }
 
 void StaticOperator::operator()(CHSV * leds, short len){
