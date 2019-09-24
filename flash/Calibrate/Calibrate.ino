@@ -1,7 +1,7 @@
 #include <FastLED.h>
 
 #define NUM_LEDS 300 //calibrate one strip at a time
-#define PWM 3
+#define PWM 6
 
 int idx;
 CRGB leds[NUM_LEDS];
