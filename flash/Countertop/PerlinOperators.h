@@ -23,4 +23,14 @@ private:
   uint16_t timeCount = 0;
 };
 
+class PerlinSaturation : public LedOperator {
+public:
+  PerlinSaturation(short res, byte ts);
+  void operator()(CHSV * leds, short len) override;
+private:
+  short resolution;
+  short timeStep, nOffset;
+  uint16_t timeCount = 0;
+};
+
 #endif
