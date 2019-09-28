@@ -13,13 +13,19 @@ KernelOperator::~KernelOperator(){
 }
 
 void KernelOperator::addToKernelBuffer(CHSV color){
-    if(kernelBufferLen == kernelLen / 2){
-        kernelBuffer[kernelBufferStart] = color;
-        kernelBufferStart++;
-        if(kernelBufferStart == kernelLen / 2){
-            kernelBufferStart = 0;
-        }
+    int idx = kernelBufferStart + kernelBufferLen;
+    if(idx >= kernelLen / 2){
+        idx -= kernelLen / 2;
     }
+
+    if(kernelBufferLen < kernelLen / 2){
+        kernelBufferLen++;
+    }
+    else {
+        kernelBufferStart++;
+    }
+
+    kernelBuffer[idx] = color;
 }
 
 CHSV KernelOperator::getFromKernelBuffer(int idx){
@@ -31,6 +37,8 @@ CHSV KernelOperator::getFromKernelBuffer(int idx){
 }
 
 void KernelOperator::operator()(CHSV * leds, short len){
+    kernelBufferLen = 0; //reset kernel buffer
+    kernelBufferStart = 0;
     // for each LED
     for(int i = kernelLen / 2; i < len - kernelLen / 2; i++){
         CHSV total;

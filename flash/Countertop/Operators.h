@@ -1,0 +1,7 @@
+#include "FillOperator.h"
+#include "ToggleOperator.h"
+#include "KernelOperator.h"
+#include "PerlinOperators.h"
+#include "RotateOperator.h"
+#include "StaticOperator.h"
+#include "Transform.h"
