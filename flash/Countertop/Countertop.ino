@@ -4,6 +4,11 @@
 CHSV ledColors[TRIANGLE_LED_COUNT + SHELF_LED_COUNT + CIELING_LED_COUNT + COUCH_LED_COUNT];
 CRGB ledRaw[TRIANGLE_LED_COUNT + SHELF_LED_COUNT + CIELING_LED_COUNT + COUCH_LED_COUNT];
 
+byte normsquare(byte val){
+  short val_s = (short)val;
+  return (byte)map(val_s * val_s / 256, 0, 64, 0, 128); //had to remap because base value was not 255
+}
+
 byte gaussianBlurKernel[5] = {
   16,
   32,
@@ -17,9 +22,9 @@ CHSV goldPattern[7] = {
   CHSV(36, 255, 0),
   CHSV(36, 255, 0),
   CHSV(36, 255, 0),  
-  CHSV(36, 255, 70),
-  CHSV(36, 255, 130),
-  CHSV(36, 255, 70)
+  CHSV(36, 255, 100),
+  CHSV(36, 255, 200),
+  CHSV(36, 255, 100)
 };
 
 StaticOperator pGold(goldPattern, 7);

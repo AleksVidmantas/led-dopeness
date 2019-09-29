@@ -23,7 +23,7 @@ PerlinBrightness::PerlinBrightness(short resolution, byte timeStep){
 void PerlinBrightness::operator()(CHSV * leds, short len){
     for(int i = 0; i < len; i++) {
       int ioffset = resolution * i + nOffset;
-      leds[i].val = scale8(leds[i].val, inoise8(ioffset, timeCount));
+      leds[i].val = ease8InOutApprox(scale8(leds[i].val, inoise8(ioffset, timeCount)));
   }
   timeCount += timeStep;
 }
